@@ -28,6 +28,40 @@ pytest -q                        # all backend tests
 - Holidays are only verified for 2026 (`deadline.py` flags later dates).
 - Lagos notice periods, Spanish and Pidgin wording, and legal aid contacts still need human verification (see "Before the pitch").
 
+
+## Privacy: what happens to your data
+
+7 Days has no accounts, no database, no cookies, no analytics and no saved files. Refreshing the page erases everything. This is every place your information goes:
+
+| Step | What is sent | Where it goes | Kept? |
+| --- | --- | --- | --- |
+| Photo of the paper | The photo, resized on your phone | Our server, then Google Gemini, once | Not saved by us. Held in memory only while it is read. Google processes it under its Gemini API terms. |
+| Deadline, checks | The fields you confirmed on screen | Our server | Not saved or logged. Calculated and returned. |
+| Answer draft, reply letter, legal aid summary | The confirmed fields and anything you typed (name, address, phone) | Our server | The PDF is built in memory and returned to you. Not stored. |
+| Listen | A spoken script with names and the amount removed. The landlord becomes "your landlord", the court becomes "the magistrate court", and the amount is left out. The deadline and days left stay. | Our server, then ElevenLabs | Not saved by us. The captions on screen show the full text. |
+| Add to my calendar | Nothing | Built on your own device | Not applicable |
+
+The server writes no logs of what you upload or type. Our hosts (Vercel and Render) keep their usual network logs, such as IP address and page address, and we do not add anything to them. If the photo cannot be read, the app asks you to type the details instead.
+
+## How we use Gemini
+
+Gemini only reads the photo. It does not decide anything.
+
+- It returns structured JSON with fixed fields (dates, names, court, case number, amount) at temperature zero.
+- It lists the fields it was unsure about, and those get a "Check this" tag on screen.
+- The tenant must confirm every field before anything is calculated, and the three dates are always flagged for a check.
+- Two models are tried in order, Gemini 3.5 Flash Lite first and Gemini 3.8 Flash as backup, each with a timeout. If both fail, the app falls back to typing the details.
+- The deadline and the Lagos notice check are plain Python rules, not AI.
+
+## How we use ElevenLabs
+
+Listen reads a short, fixed, human reviewed script out loud so someone who is stressed or reads slowly can still understand their paper.
+
+- Scripts are written templates, not generated text, in English and Spanish for Atlanta, and English and Pidgin for Lagos.
+- Lagos uses a Nigerian voice for both English and Pidgin.
+- The legal words (such as dispossessory or writ of possession) each have a short spoken meaning too.
+- Only the scrubbed script is sent. Names and amounts never leave our server for ElevenLabs.
+
 ## Files
 | File | What it does | Owner |
 |---|---|---|
