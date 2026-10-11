@@ -821,7 +821,7 @@ function Listen({ t, fields, extras, lang }) {
     try {
       const ex = await explainNotice(fields, { ...extras, locked_out: Boolean(extras.locked_out) }, lang);
       setText(ex.text);
-      const blob = await speak(ex.text, voiceFor(fields.jurisdiction, lang));
+      const blob = await speak(ex.spoken || ex.text, voiceFor(fields.jurisdiction, lang));
       if (!blob) {
         setNoAudio(true);
         return setState("idle");
