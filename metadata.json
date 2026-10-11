@@ -1,0 +1,9 @@
+{
+  "name": "7 Days",
+  "description": "Find your real eviction deadline, understand the notice, and draft your answer.",
+  "prompt": "Snap your eviction paper. See your real eviction deadline, hear what it means, check your options, and start your answer.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
