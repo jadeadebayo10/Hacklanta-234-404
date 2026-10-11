@@ -19,9 +19,11 @@ def _money(amount, currency):
 
 def explain(fields: dict, check: dict, lang: str = "en") -> dict:
     j = fields.get("jurisdiction") or "atlanta"
-    if j == "lagos":
-        return _lagos(fields, check, lang)
-    return _atlanta(fields, check, lang)
+    build = _lagos if j == "lagos" else _atlanta
+    result = build(fields, check, lang)          # full text, shown on screen
+    private = {**fields, "landlord_name": None, "court": None, "amount_claimed": None}
+    result["spoken"] = build(private, check, lang)["text"]   # scrubbed, sent to voice
+    return result
 
 
 def _atlanta(fields, check, lang):
@@ -29,8 +31,9 @@ def _atlanta(fields, check, lang):
     due = d.get("deadline_label", "the date on your paper")
     left = d.get("days_left")
     amount = _money(fields.get("amount_claimed"), "USD")
-    landlord = fields.get("landlord_name") or "your landlord"
-    court = fields.get("court") or "the magistrate court"
+    es = lang == "es"
+    landlord = fields.get("landlord_name") or ("su propietario" if es else "your landlord")
+    court = fields.get("court") or ("la corte de magistrados" if es else "the magistrate court")
 
     if lang == "es":
         parts = [
